@@ -1,4 +1,4 @@
-from mainFolder import app
+from mainFolder import app, testGraph
 #, dash_line_graph, dash_live_graph
 
 if __name__ == '__main__':
@@ -7,5 +7,4 @@ if __name__ == '__main__':
     app.run(debug=True)
 
     #production running.
-    #when u want to connect other device to this platform, u use this.
     #app.run(host='0.0.0.0', port='8050')
