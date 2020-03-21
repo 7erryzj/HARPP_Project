@@ -1,1 +1,36 @@
-<h1>View Analytics Page</h1>
+{% extends "mainpage.html" %}
+
+{% block content_body %}
+<div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+    <iframe style="height:500px; width:100%" id ="graphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+</div>
+
+<hr>
+
+<div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+    <iframe style="height:500px; width:100%" id ="graphFrame2" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+</div>
+
+<hr>
+
+<div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+    <iframe style="height:500px; width:100%" id ="transactionGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+</div>
+
+{% endblock content_body%}
+{% block content_footer %}
+<script>
+    var graphUrl = location.origin.toString()+"/testGraph";
+    var graphUrl2 = location.origin.toString()+"/testGraph2";
+    var transactionGraphUrl = location.origin.toString()+"/transactionCountForXYearGraph";
+
+    var graph = document.getElementById('graphFrame');
+    var graph2 = document.getElementById('graphFrame2');
+    var transactionGraph = document.getElementById('transactionGraphFrame');
+    $(document).ready(function(){
+        graph.src = graphUrl;
+        graph2.src = graphUrl2;
+        transactionGraph.src = transactionGraphUrl;
+    })
+    </script>
+{% endblock content_footer%}

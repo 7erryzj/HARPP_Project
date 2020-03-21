@@ -9,26 +9,45 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js">
-		<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+		<style>
+			#overlay {
+			  position: fixed;
+			  display: block;
+			  width: 100%;
+			  height: 100%;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  background-color: rgba(0,0,0,0.5);
+			  z-index: 10001;
+			}
+			
+			#text{
+			  position: absolute;
+			  top: 50%;
+			  left: 50%;
+			  font-size: 50px;
+			  color: white;
+			  transform: translate(-50%,-50%);
+			  -ms-transform: translate(-50%,-50%);
+			}
+			</style>
 	</head>
 
 	<!---in event that i need to include something from another page-->
 	{% block content_head %}
 	{% endblock content_head%}
-
-    <!----
-    <body>
-        <h1 id="123">hello world</h1>
-
-        <div class="col-button">
-            <a class="btn btn-primary topBtn" id="clickMe" role="button" href="#">Click me</a>
-        </div>
-
-        <input id="input" placeholder="write me" value=""></input>
-    </body>
-    -->
     <body class="is-preload">
+		<!--Mask Overlay-->
+		<div id="overlay">
+			<div id="text">
+
+			</div>
+		  </div>
+
 		<!-- Wrapper -->
 			<div id="wrapper">
 				<!-- Main -->
@@ -42,12 +61,6 @@
 							<!-- Content -->
 							<section>
 								{% block content_body %}
-								<header class="main">
-									<h1>HARPP</h1>
-								</header>
-								
-								<span class="image main"><img id="profilePicture" src="./static/images/pic11.jpg" alt="" /></span>
-								<iframe id ="graphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
 								<hr class="major" />
 
 								<h2>Interdum sed dapibus</h2>
@@ -91,13 +104,6 @@
 									</center>
 								</span>
 							</section>
-							<!-- Search -->
-								<section id="search" class="alt">
-									<form method="post" action="#">
-										<input type="text" name="query" id="query" placeholder="Search" />
-									</form>
-								</section>
-
 							<!-- Menu -->
 								<nav id="menu">
 									<header class="major">
@@ -108,12 +114,6 @@
 										<li><a href="{{ url_for('viewListing') }}">View Listing</a></li>
 										<li><a href="{{ url_for('predictionTool') }}">Prediction Tool</a></li>
 										<li><a href="{{ url_for('viewAnalytics') }}">View Analytics</a></li>
-										<li>
-											<span class="opener">Submenu</span>
-											<ul>
-												<li><a href="#">Lorem Dolor</a></li>
-											</ul>
-										</li>
 									</ul>
 								</nav>
 							<!-- Footer -->
@@ -125,82 +125,63 @@
 					</div>
 
 			</div>
+		</div>
 
 		<!-- Scripts -->
-			<script src="static/js/jquery.min.js"></script>
+			
+			<script src="static/js/datatables.min.js"></script>
 			<script src="static/js/browser.min.js"></script>
 			<script src="static/js/breakpoints.min.js"></script>
 			<script src="static/js/util.js"></script>
 			<script src="static/js/main.js"></script>
-
 	</body>
-	<script>
 
-var graphUrl = location.origin.toString()+"/testGraph";
-var graph = document.getElementById('graphFrame');
-$(document).ready(function(){
-	graph.src = graphUrl;
-})
+	{% block content_footer %}
+	{% endblock content_footer%}
+<script>
+function hideLoader() {
+  document.getElementById("overlay").style.display = "none";
+}
+
+setTimeout(hideLoader, 1000);
+
+$(window).on("load", function () {
+            init();
+        });
+
 		//ready gapi.auth for retrival of user detail
-		function init(){
-			gapi.load('auth2', function() {
-				console.log("gapi loaded");
-				gapi.auth2.init({
-				client_id: '431281240442-384j0atlt8u8qn1ch69cu0gc80cot4n6.apps.googleusercontent.com',
-			})
-				.then(function(){
-					console.log("user loaded");
-					auth2 = gapi.auth2.getAuthInstance();
-					var profile = auth2.currentUser.get().getBasicProfile();
-					console.log('ID: ' + profile.getId());
-					document.getElementById('username').innerText += profile.getName();
-					console.log('Given Name: ' + profile.getGivenName());
-					console.log('Image URL: ' + profile.getImageUrl());
-					console.log('Email: ' + profile.getEmail());
-					if(profile.getImageUrl()!=null){
-						document.getElementById('avatar').src = profile.getImageUrl();
-					}
-					
-					console.log(auth2.isSignedIn.get()); //now this always returns correctly        
-				});
-			});
-	
-		}
+function init(){
+	gapi.load('auth2', function() {
+		console.log("gapi loaded");
+		gapi.auth2.init({
+		client_id: '431281240442-384j0atlt8u8qn1ch69cu0gc80cot4n6.apps.googleusercontent.com',
+	})
+		.then(function () {
+			auth2 = gapi.auth2.getAuthInstance();
+			var profile = auth2.currentUser.get().getBasicProfile();
+			console.log('ID: ' + profile.getId());
+			document.getElementById('username').innerText += profile.getName();
+			console.log('Given Name: ' + profile.getGivenName());
+			console.log('Image URL: ' + profile.getImageUrl());
+			console.log('Email: ' + profile.getEmail());
+			if (profile.getImageUrl() != null) {
+				document.getElementById('avatar').src = profile.getImageUrl();
+			}
+			
+			console.log(auth2.isSignedIn.get());    
+		});
+});
 
-		function Logout() {
-		  var auth2 = gapi.auth2.getAuthInstance();
-		  auth2.signOut().then(function () {
-			console.log('User signed out.');
-			window.location.href = "{{ url_for('login') }}";
-		  });
-		}
+}
 
-	  </script>	
-<script>/*
-var hello = document.getElementById("123");
-var click = document.getElementById("clickMe");
-var input = document.getElementById("input");
+function Logout() {
+	var auth2 = gapi.auth2.getAuthInstance();
+	auth2.signOut().then(function () {
+		console.log('User signed out.');
+		window.location.href = "{{ url_for('viewListing') }}";
+	});
+}
 
-click.onclick=function(){
-    //location.replace(location.origin+"/test1");
-    console.log(input.value); */
-    /*ajax(){
-        data: input.value,
-        type: "POST/GET",
-        url: "/test1"
-    }
-    .done(function){
-        if(data.success){
-            //do smth
-            input.value = "yay";
-        }
-        else if(data.failed){
-            //do smth
-        }
-    }*/
-//}
-
-
-</script>
+</script>	
 
 </html>

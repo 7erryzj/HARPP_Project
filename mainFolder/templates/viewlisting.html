@@ -1,14 +1,57 @@
-<h1>View Listing Page</h1>
+{% extends "mainpage.html" %}
+{% block content_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
 
-<form method="POST">
-    <h3>dao POST test</h3>
-        <input class="form-control" type="text" name="requestID" id="requestID">
-        <button id="save" class="btn form-control" type="submit"><i class="fa fa-fw fa-check"></i><b>post</b></button>
-</form>
+{% endblock content_head%}
+{% block content_body %}
 
-<br>
-<form method="GET">
-    <h3>dao GET test</h3>
-        <input class="form-control" type="text" name="requestID22" id="requestID22">
-        <button id="save" class="btn form-control" type="submit"><i class="fa fa-fw fa-check"></i><b>get</b></button>
-</form>
+<div id="target" style="display: none">
+<h3>Listings</h3>
+{{ tables|safe }}
+</div>
+{% endblock content_body%}
+
+{% block content_footer %}
+
+<script>
+        function init(){
+                gapi.load('auth2', function() {
+                console.log("gapi loaded");
+                gapi.auth2.init({
+                client_id: '431281240442-384j0atlt8u8qn1ch69cu0gc80cot4n6.apps.googleusercontent.com',
+        })
+                .then(function () {
+                        auth2 = gapi.auth2.getAuthInstance();
+                        var profile = auth2.currentUser.get().getBasicProfile();
+                        console.log('ID: ' + profile.getId());
+                        document.getElementById('username').innerText += profile.getName();
+                        console.log('Given Name: ' + profile.getGivenName());
+                        console.log('Image URL: ' + profile.getImageUrl());
+                        console.log('Email: ' + profile.getEmail());
+                        if (profile.getImageUrl() != null) {
+                                document.getElementById('avatar').src = profile.getImageUrl();
+                        }
+                        
+                        console.log(auth2.isSignedIn.get());    
+                });
+		});
+
+	}
+
+
+        $(window).on("load", function () {
+                var hdb_table = document.getElementById("hdb_tableid");
+               
+                $(hdb_table).DataTable({
+                        "columnDefs": [
+                                { "width": "20%", "targets": 0 }
+                        ]
+                });
+
+                var div_table = document.getElementById("target");
+                div_table.style = "display"
+        });
+
+
+</script>
+{% endblock content_footer%}

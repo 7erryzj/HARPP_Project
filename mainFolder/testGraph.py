@@ -6,90 +6,24 @@ import plotly.graph_objs as go
 from mainFolder import dash_testGraph_graph, app
 from datetime import datetime, timedelta
 import pandas as pd
+import plotly.express as px
 
-df = pd.read_csv('https://plotly.github.io/datasets/country_indicators.csv')
+#df = pd.read_csv('https://plotly.github.io/datasets/country_indicators.csv')
+df = pd.read_csv('mainFolder\example1.csv')
+#available_indicators = df['Indicator Name'].unique()
+available_indicators = df['town'].unique()
 
-available_indicators = df['Indicator Name'].unique()
+url = 'https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv'
+dataset = pd.read_csv(url)
 
-dash_testGraph_graph.layout = html.Div([
-    html.Div([
+px.set_mapbox_access_token('pk.eyJ1IjoidG9ja2V0IiwiYSI6ImNrN3p5dHAxczAxejgzbnA1Z2V1c2Y3eHIifQ.7-31EkU6G7Vsie54KNriBQ')
+df = px.data.carshare()
+fig = px.scatter_mapbox(df, lat="centroid_lat", lon="centroid_lon",     color="peak_hour", size="car_hours",
+                  color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10)
 
-        html.Div([
-            dcc.Dropdown(
-                id='xaxis-column',
-                options=[{'label': i, 'value': i} for i in available_indicators],
-                value='Fertility rate, total (births per woman)'
-            ),
-            dcc.RadioItems(
-                id='xaxis-type',
-                options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-                value='Linear',
-                labelStyle={'display': 'inline-block'}
-            )
-        ],
-        style={'width': '48%', 'display': 'inline-block'}),
+dash_testGraph_graph.layout = dcc.Graph(
+    id='exmaple-graph',
+    figure=fig
+)
 
-        html.Div([
-            dcc.Dropdown(
-                id='yaxis-column',
-                options=[{'label': i, 'value': i} for i in available_indicators],
-                value='Life expectancy at birth, total (years)'
-            ),
-            dcc.RadioItems(
-                id='yaxis-type',
-                options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-                value='Linear',
-                labelStyle={'display': 'inline-block'}
-            )
-        ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-    ]),
 
-    dcc.Graph(id='indicator-graphic'),
-
-    dcc.Slider(
-        id='year--slider',
-        min=df['Year'].min(),
-        max=df['Year'].max(),
-        value=df['Year'].max(),
-        marks={str(year): str(year) for year in df['Year'].unique()},
-        step=None
-    )
-])
-
-@dash_testGraph_graph.callback(
-    Output('indicator-graphic', 'figure'),
-    [Input('xaxis-column', 'value'),
-     Input('yaxis-column', 'value'),
-     Input('xaxis-type', 'value'),
-     Input('yaxis-type', 'value'),
-     Input('year--slider', 'value')])
-def update_graph(xaxis_column_name, yaxis_column_name,
-                 xaxis_type, yaxis_type,
-                 year_value):
-    dff = df[df['Year'] == year_value]
-
-    return {
-        'data': [dict(
-            x=dff[dff['Indicator Name'] == xaxis_column_name]['Value'],
-            y=dff[dff['Indicator Name'] == yaxis_column_name]['Value'],
-            text=dff[dff['Indicator Name'] == yaxis_column_name]['Country Name'],
-            mode='markers',
-            marker={
-                'size': 15,
-                'opacity': 0.5,
-                'line': {'width': 0.5, 'color': 'white'}
-            }
-        )],
-        'layout': dict(
-            xaxis={
-                'title': xaxis_column_name,
-                'type': 'linear' if xaxis_type == 'Linear' else 'log'
-            },
-            yaxis={
-                'title': yaxis_column_name,
-                'type': 'linear' if yaxis_type == 'Linear' else 'log'
-            },
-            margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
-            hovermode='closest'
-        )
-    }
