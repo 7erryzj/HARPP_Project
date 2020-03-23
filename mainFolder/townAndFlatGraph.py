@@ -51,7 +51,7 @@ def showNumberTransactionsForTownAndFlatModel(town, flatType):
              labels={'resale_price':'Average Resale Price for ' + town + ' ' +flatType , 'listing_year':'Year'}, height=400)
     fig.update_layout(
          title={
-        'text': "Transactions For Town And Flat Model,
+        'text': "Transactions For Town And Flat Model",
         'y':0.9,
         'x':0.5,
         'xanchor': 'center',

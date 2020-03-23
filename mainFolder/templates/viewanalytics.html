@@ -3,36 +3,51 @@
 {% block content_body %}
 <div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
     <iframe style="height:500px; width:100%" id ="resaleBarGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+    <h2>Correlation Between Resale Price and other Factors</h2>
+    <span>This interactive graph allows you to toggle between the various factors that we identified as having a reasonable correlation with the resale prices of HDB flats. The x-axis highlights your chosen factor, while the y-axis shows the average resale price based on the factor chosen. </span>
 </div>
 
-<hr>
+<hr class="major" />
 
 <div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
     <iframe style="height:500px; width:100%" id ="resaleAvgGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+    <h2>General View of Resale Price Over Time</h2>
+    <span>This interactive graph allows you to toggle between “Region” and “Town”. Towns are a subset of regions, where the towns are classified according to Central, East, North, North East and West.
+        Here you can view how the average resale prices increased over time. It is also interesting to note how policy changes drastically affected the resale prices, as shown in the graphs below.</span>
 </div>
 
-<hr>
+<hr class="major" />
 
 <div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
     <iframe style="height:500px; width:100%" id ="townAndFlatGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+    <h2>Detailed View of Resale Price Over Time</h2>
+    <span>This interactive graph allows you to choose a town and a flat type. It will display the average resale prices over the years for the town-flat type combination you enter.</span>
 </div>
 
-<hr>
+<hr class="major" />
 
 <div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
     <iframe style="height:500px; width:100%" id ="transactionGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+    <h2>Sale Transactions Over Time</h2>
+    <span>This interactive graph allows you to choose the year and view the number of transactions for the three main flat types – 3-Room, 4-Room and 5-Room. You can see how demand fluctuates for each flat type, and perhaps come to a more informed decision on what flat you might buy as your next house and investment.</span>
 </div>
 
-<hr>
+<hr class="major" />
 
 <div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
     <iframe style="height:500px; width:100%" id ="mapGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+    <h2>Singapore Map with HDB Sale Transaction Information</h2>
+    <span>This interactive map allows you to choose the year to load the data in. The colour indicates the price with respect to other datasets of the same year. A reddish colour indicates a very high price, while a blueish colour indicates a lower price in relation to that year’s sales. Moreover, the sizes of each individual point also show the number of sale transactions at that coordinate (you could consider this as the flat). A larger circle would mean more sales were completed at that coordinate.</span>
 </div>
 
-<hr>
+<hr class="major" />
 
 <div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
     <iframe style="height:500px; width:100%" id ="gapminderGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+    <h2>Resale Prices and Price Per Square Meter Over Time</h2>
+    <span>This Gapminder style graph shows sales transactions in Singapore over time. The circles are plotted using town-flat type combinations. Towns are colour coded. Also, the sizes are indicative of the number of sales transactions for that town-flat type for that particular year.
+        Feel free to filter the towns displayed by clicking on them individually, or double clicking on a town to only display that town in the graph. The bar below can be dragged to specific years should you wish to do so. Alternatively, clicking play (or pause) would allow the graph to play/plot automatically. The auto scaling feature at the top right will also be helpful with datapoints exceeding the graph’s current scope.</span>
+
 </div>
 {% endblock content_body%}
 {% block content_footer %}

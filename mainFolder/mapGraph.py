@@ -10,6 +10,8 @@ import plotly.express as px
 
 HDB = pd.read_csv('mainFolder/final_df.csv',low_memory=False)
 available_year = HDB['listing_year'].unique()
+available_year.sort()
+
 dash_mapGraph_graph.layout = html.Div([
 
     html.Div([
