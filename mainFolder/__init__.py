@@ -8,13 +8,14 @@ import dash
 
 app = Flask(__name__)
 
-dash_testGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/testGraph/')
-dash_testGraph2_graph= dash.Dash(__name__, server=app,url_base_pathname='/testGraph2/')
 dash_testPrediction_graph= dash.Dash(__name__, server=app,url_base_pathname='/testPrediction/')
 dash_transactionCountForXYear_graph= dash.Dash(__name__, server=app,url_base_pathname='/transactionCountForXYearGraph/')
 dash_mapGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/mapGraph/')
 dash_gapminderGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/gapminderGraph/')
+dash_resaleBarGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/resaleBarGraph/')
+dash_resaleAvgGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/resaleAvgGraph/')
+dash_townAndFlatGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/townAndFlatGraph/')
 
-from mainFolder import routes, testGraph, testGraph2, transactionCountForXYearGraph, testPrediction, mapGraph, gapminderGraph
+from mainFolder import routes, transactionCountForXYearGraph, testPrediction, mapGraph, gapminderGraph, resaleBarGraph, resaleAvgGraph, townAndFlatGraph
 #import graph
 #, line, live
