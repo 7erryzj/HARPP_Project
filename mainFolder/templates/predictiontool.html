@@ -1,3 +1,20 @@
 {% extends "mainpage.html" %}
 <h1>Prediction Tool Page</h1>
 
+{% block content_body %}
+<div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+    <iframe style="height:1500px; width:100%" id="graphFrame" scrolling="no" allowfullscreen="yes" frameborder="0"></iframe>
+</div>
+
+{% endblock content_body%}
+
+{% block content_footer %}
+<script>
+    var predictionGraphUrl = location.origin.toString() + "/testPrediction";
+
+    var predictionGraph = document.getElementById('graphFrame');
+    $(document).ready(function () {
+        predictionGraph.src = predictionGraphUrl;
+    })
+</script>
+{% endblock content_footer%}

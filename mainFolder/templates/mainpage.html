@@ -4,7 +4,7 @@
 		<title>HARPP - {{title}}</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta name="google-signin-client_id" content="431281240442-384j0atlt8u8qn1ch69cu0gc80cot4n6.apps.googleusercontent.com">
+		<meta name="google-signin-client_id" content="431281240442-fellv61c97tvnto59rlkuhgobr372hr0.apps.googleusercontent.com">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js">
@@ -55,7 +55,7 @@
 						<div class="inner">
 							<!-- Header -->
 								<header id="header">
-									<a href="#" class="logo"><strong>HARPP</strong></a>
+									<a href="{{ url_for('mainPage') }}" class="logo"><strong>HARPP</strong></a>
 								</header>
 
 							<!-- Content -->
@@ -63,9 +63,9 @@
 								{% block content_body %}
 								<hr class="major" />
 
-								<h2>Interdum sed dapibus</h2>
+								<h2>About HAARP</h2>
 								<p>
-								This document proposes the design and publishing of a web application which serves as a one-stop site for anyone interested in purchasing a flat as an investment, or selling their current flat. The project aims to accomplish the following goals:
+								This web application serves as a one-stop site for anyone interested in purchasing a flat as an investment, or selling their current flat. The project aims to accomplish the following goals:
 								Display the findings of analysis on the elements that contribute to a higher (or lower) resale price of a HDB flat.
 								Provide the service to predict the pricing of a flat, given relevant information of the flat, and the existing infrastructure in the estate.
 										For the first goal, the resale prices of flats, as well as basic flat information will be retrieved from data.gov. After which, more information like the location of malls, schools, healthcare and hawker centers will be added to our dataset. Following the acquisition of these datasets, we then separate flats by the type (i.e. 3-Room, 4-Room). These types will be analyzed individually, comparing the resale prices of respective flat types to every other element in our dataset in an attempt to find correlation. Any confusion between causality of elements will be discussed with our client sponsor and representatives of the Housing Development Board and rectification of any false positive will be done.
@@ -154,7 +154,7 @@ function init(){
 	gapi.load('auth2', function() {
 		console.log("gapi loaded");
 		gapi.auth2.init({
-		client_id: '431281240442-384j0atlt8u8qn1ch69cu0gc80cot4n6.apps.googleusercontent.com',
+		client_id: '431281240442-fellv61c97tvnto59rlkuhgobr372hr0.apps.googleusercontent.com',
 	})
 		.then(function () {
 			auth2 = gapi.auth2.getAuthInstance();

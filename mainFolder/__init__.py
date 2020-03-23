@@ -18,8 +18,9 @@ app = Flask(__name__)
 
 dash_testGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/testGraph/')
 dash_testGraph2_graph= dash.Dash(__name__, server=app,url_base_pathname='/testGraph2/')
+dash_testPrediction_graph= dash.Dash(__name__, server=app,url_base_pathname='/testPrediction/')
 dash_transactionCountForXYear_graph= dash.Dash(__name__, server=app,url_base_pathname='/transactionCountForXYearGraph/')
 
-from mainFolder import routes, testGraph, testGraph2, transactionCountForXYearGraph
+from mainFolder import routes, testGraph, testGraph2, transactionCountForXYearGraph, testPrediction
 #import graph
 #, line, live
