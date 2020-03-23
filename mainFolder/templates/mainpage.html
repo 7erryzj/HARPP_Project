@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js">
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 		<style>
 			#overlay {
@@ -44,7 +45,9 @@
 		<!--Mask Overlay-->
 		<div id="overlay">
 			<div id="text">
-
+				<lottie-player
+					src="https://assets7.lottiefiles.com/packages/lf20_NVd2Vg/house.json" mode="bounce" background="transparent"  speed="1.5"  style="width: 300px; height: 300px;"  loop autoplay >
+				</lottie-player>
 			</div>
 		  </div>
 
@@ -139,17 +142,17 @@
 	{% block content_footer %}
 	{% endblock content_footer%}
 <script>
+
 function hideLoader() {
   document.getElementById("overlay").style.display = "none";
 }
 
-setTimeout(hideLoader, 1000);
-
 $(window).on("load", function () {
             init();
+			setTimeout(hideLoader, 4000);
         });
 
-		//ready gapi.auth for retrival of user detail
+//ready gapi.auth for retrival of user detail
 function init(){
 	gapi.load('auth2', function() {
 		console.log("gapi loaded");

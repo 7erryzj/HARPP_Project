@@ -17,20 +17,37 @@
     <iframe style="height:500px; width:100%" id ="transactionGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
 </div>
 
+<hr>
+
+<div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+    <iframe style="height:500px; width:100%" id ="mapGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+</div>
+
+<hr>
+
+<div class="row-container" style="display: flex; width: 100%; height: 100%; flex-direction: column;">
+    <iframe style="height:500px; width:100%" id ="gapminderGraphFrame" scrolling="yes" allowfullscreen="yes" frameborder="0"></iframe>
+</div>
 {% endblock content_body%}
 {% block content_footer %}
 <script>
     var graphUrl = location.origin.toString()+"/testGraph";
     var graphUrl2 = location.origin.toString()+"/testGraph2";
     var transactionGraphUrl = location.origin.toString()+"/transactionCountForXYearGraph";
+    var mapGraphUrl = location.origin.toString()+"/mapGraph";
+    var gapminderGraphUrl = location.origin.toString()+"/gapminderGraph";
 
     var graph = document.getElementById('graphFrame');
     var graph2 = document.getElementById('graphFrame2');
     var transactionGraph = document.getElementById('transactionGraphFrame');
+    var mapGraph = document.getElementById('mapGraphFrame');
+    var gapminderGraph = document.getElementById('gapminderGraphFrame');
     $(document).ready(function(){
         graph.src = graphUrl;
         graph2.src = graphUrl2;
         transactionGraph.src = transactionGraphUrl;
+        mapGraph.src = mapGraphUrl;
+        gapminderGraph.src = gapminderGraphUrl;
     })
     </script>
 {% endblock content_footer%}

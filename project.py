@@ -1,4 +1,4 @@
-from mainFolder import app, testGraph, testGraph2, transactionCountForXYearGraph
+from mainFolder import app, testGraph, testGraph2, transactionCountForXYearGraph, mapGraph
 #, dash_line_graph, dash_live_graph
 
 if __name__ == '__main__':

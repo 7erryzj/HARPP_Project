@@ -8,19 +8,13 @@ import dash
 
 app = Flask(__name__)
 
-#random key generated. can be useful for example session cookie, authentication etc.
-#app.config['SECRET_KEY'] = os.urandom(24) 
-
-#for graph
-#dash_line_graph = dash.Dash(__name__, sharing=True, server = app, static_folder='static', url_base_pathname='/line/')
-#dash_live_graph = dash.Dash(__name__, sharing=True, server = app, static_folder='static', url_base_pathname='/live/')
-#dash_graph_test = dash.Dash(__name__, server=app, url_base_pathname='/dash_graph_test/')
-
 dash_testGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/testGraph/')
 dash_testGraph2_graph= dash.Dash(__name__, server=app,url_base_pathname='/testGraph2/')
 dash_testPrediction_graph= dash.Dash(__name__, server=app,url_base_pathname='/testPrediction/')
 dash_transactionCountForXYear_graph= dash.Dash(__name__, server=app,url_base_pathname='/transactionCountForXYearGraph/')
+dash_mapGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/mapGraph/')
+dash_gapminderGraph_graph= dash.Dash(__name__, server=app,url_base_pathname='/gapminderGraph/')
 
-from mainFolder import routes, testGraph, testGraph2, transactionCountForXYearGraph, testPrediction
+from mainFolder import routes, testGraph, testGraph2, transactionCountForXYearGraph, testPrediction, mapGraph, gapminderGraph
 #import graph
 #, line, live

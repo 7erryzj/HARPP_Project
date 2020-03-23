@@ -9,9 +9,9 @@ import pandas as pd
 import plotly.express as px
 
 #df = pd.read_csv('https://plotly.github.io/datasets/country_indicators.csv')
-df = pd.read_csv('mainFolder\example1.csv')
+#df = pd.read_csv('mainFolder\example1.csv')
 #available_indicators = df['Indicator Name'].unique()
-available_indicators = df['town'].unique()
+#available_indicators = df['town'].unique()
 
 url = 'https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv'
 dataset = pd.read_csv(url)
