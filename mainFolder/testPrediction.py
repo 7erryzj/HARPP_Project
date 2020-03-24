@@ -1,15 +1,17 @@
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 #from dash.exceptions import PreventUpdate
 
+import plotly.express as px
+import plotly.graph_objects as go
+
 import pandas as pd
 from mainFolder import app, dash_testPrediction_graph
 
 # 2010 - 2020 (10 years for actual)
-# 2020 - 2030 (10 years for predicted)
+# 2020 - 2025 (5 years for predicted)
 
 hdb_data = pd.read_csv('./mainFolder/final_df.csv')
 lrf_data = pd.read_csv('./mainFolder/linear_regression_formula.csv')
@@ -27,16 +29,11 @@ unique_flattype = hdb_data_2010_onwards['flat_type'].unique()
 unique_storeyrange = hdb_data_2010_onwards['storey_range'].unique()
 unique_flatmodel = hdb_data_2010_onwards['flat_model'].unique()
 
-# Extract the first row
-#town_data = lrf_data.iloc[0]
-#print(town_data)
-#print(town_data.a1)
-
 # Create an empty list for actual year, predict year, actual resale price and new resale price to plot the x and y axis
 actual_year=[]
 predict_year=[]
-actual_resale_price=[]
-predict_resale_price=[]
+actual_resale_price_per_sqm=[]
+predict_resale_price_per_sqm=[]
 
 # Initialize Boolean Default Value for hardcoding the graph
 isDefault_predict_resale_price = True
@@ -76,10 +73,6 @@ dash_testPrediction_graph.layout = html.Div([
 
         html.Div([
             html.P("Select Address"),
-            #dcc.Dropdown(
-            #    id='dropdown_address',
-            #    value='Block 142 PASIR RIS ST 11'
-            #),
             dcc.Dropdown(
                 id='dropdown_address',
                 options=[{'label': i, 'value': i} for i in unique_address],
@@ -113,183 +106,8 @@ dash_testPrediction_graph.layout = html.Div([
     # Bar Graph
     dcc.Graph(id='bar-graph'),
 
-    html.Hr(),
-
-    # Actual Line Graph
-    dcc.Graph(id='actual-line-graph'),
-
-    html.Hr(),
-
-    # Predicted Line Graph
-    dcc.Graph(id='predicted-line-graph')
-
+    html.Hr()
 ])
-
-#def setAddressMethod(town):
-#    filtered_dropdown_town = hdb_data_2010_onwards[hdb_data_2010_onwards['town'] == town]
-#    filtered_dropdown_address = filtered_dropdown_town['Full_Address'].unique()
-#    print("Town",town, "Unique Address", filtered_dropdown_address)
-#    return filtered_dropdown_address
-
-#@dash_testPrediction_graph.callback(
-#    Output('dropdown_address', 'options'),
-#    [Input('dropdown_town', 'value')])
-#def set_address_options(selected_town):
-    
-#    filtered_dropdown_address = setAddressMethod(selected_town)
-#    return dcc.Dropdown(
-#                options=[{'label': i, 'value': i} for i in filtered_dropdown_address]
-#                #value=filtered_dropdown_address.iloc[0]['Full_Address']
-#            )
-
-#@dash_testPrediction_graph.callback(
-#    Output('dropdown_address', 'value'),
-#    [Input('dropdown_address', 'options')])
-#def set_address_values(availabe_options):
-#    return availabe_options[0]['value']
-
-def create_actual_line_graph(title):
-    return {
-        'data': [dict(
-            x=actual_year,
-            y=actual_resale_price,
-            mode='lines+markers',
-            name=title
-        )],
-        'layout': {
-            'height': 300,
-            'margin': {'l': 100, 'b': 50, 'r': 0, 't': 40},
-            'annotations': [{
-                'x': 1, 'y': 1, 'xanchor': 'left', 'yanchor': 'bottom',
-                'xref': 'paper', 'yref': 'paper', 'showarrow': False,
-                'align': 'left', 'bgcolor': 'rgba(255, 255, 255, 0.5)',
-                'valign' : 'top',
-                'text': "Town"
-            }],
-             'title':'Actual Resale Price of Each Town',
-             'showlegend':True,
-              'legend':dict(
-                x=1.0,
-                y=1.0
-              ),
-              'xaxis':{
-                'title': "Years"
-                },
-               'yaxis':{
-                'title': "Actual Price"
-                },
-        }
-    }
-
-@dash_testPrediction_graph.callback(
-    dash.dependencies.Output('actual-line-graph', 'figure'),
-    [dash.dependencies.Input('dropdown_town', 'value'),
-     dash.dependencies.Input('dropdown_address', 'value'),
-     dash.dependencies.Input('dropdown_floorarea', 'value'),
-     dash.dependencies.Input('dropdown_remaininglease', 'value'),
-     dash.dependencies.Input('dropdown_listyear', 'value'),
-     dash.dependencies.Input('dropdown_flattype', 'value'),
-     dash.dependencies.Input('dropdown_storeyrange', 'value'),
-     dash.dependencies.Input('dropdown_flatmodel', 'value')])
-def update_actual_line_graph(dropdown_town, dropdown_address, dropdown_floorarea, dropdown_remaininglease, dropdown_listyear, dropdown_flattype, dropdown_storeyrange, dropdown_flatmodel):
-    print("Town: ",dropdown_town)
-    print("Address: ",dropdown_address)
-    print("Floor Area: ",dropdown_floorarea)
-    print("Remaining Lease Years: ",dropdown_remaininglease)
-    print("Listing Year: ",dropdown_listyear)
-    print("Listing Year Type: ",type(dropdown_listyear))
-    print("Flat Type: ",dropdown_flattype)
-    print("Storey Range: ",dropdown_storeyrange)
-    print("Flat Model: ",dropdown_flatmodel)
-
-    actual_result = find_actual_resale_price(dropdown_town, dropdown_address, int(dropdown_listyear))
-    cat_to_num_result = convertCatToNum(dropdown_flattype, dropdown_storeyrange, dropdown_flatmodel)
-
-    #actual_result[0] - town_result, actual_result[1] - min_dist_mrt, actual_result[2] - min_dist_mall, actual_result[3] - cbd_dist, 
-    #cat_to_num_result[0] - flat_type_num, cat_to_num_result[1] - storey_range_num, cat_to_num_result[2] - flat_model_num
-    calculate_resale_price(int(dropdown_floorarea), int(dropdown_remaininglease), actual_result[0], actual_result[1], actual_result[2], actual_result[3], int(dropdown_listyear), cat_to_num_result[0], cat_to_num_result[1], cat_to_num_result[2])
-
-    return create_actual_line_graph(actual_result[0])
-
-def create_predicted_line_graph(title):
-    return {
-        'data': [dict(
-            x=predict_year,
-            y=predict_resale_price,
-            mode='lines+markers',
-            name=title
-        )],
-        'layout': {
-            'height': 300,
-            'margin': {'l': 100, 'b': 50, 'r': 0, 't': 40},
-            'annotations': [{
-                'x': 1, 'y': 1, 'xanchor': 'left', 'yanchor': 'bottom',
-                'xref': 'paper', 'yref': 'paper', 'showarrow': False,
-                'align': 'left', 'bgcolor': 'rgba(255, 255, 255, 0.5)',
-                'valign' : 'top',
-                'text': "Town"
-            }],
-             'title':'Predicted Resale Price of Each Town',
-             'showlegend':True,
-              'legend':dict(
-                x=1.0,
-                y=1.0
-              ),
-              'xaxis':{
-                'title': "Years"
-                },
-               'yaxis':{
-                'title': "Predicted Price"
-                },
-        }
-    }
-
-@dash_testPrediction_graph.callback(
-    dash.dependencies.Output('predicted-line-graph', 'figure'),
-    [dash.dependencies.Input('dropdown_town', 'value'),
-     dash.dependencies.Input('dropdown_address', 'value'),
-     dash.dependencies.Input('dropdown_floorarea', 'value'),
-     dash.dependencies.Input('dropdown_remaininglease', 'value'),
-     dash.dependencies.Input('dropdown_listyear', 'value'),
-     dash.dependencies.Input('dropdown_flattype', 'value'),
-     dash.dependencies.Input('dropdown_storeyrange', 'value'),
-     dash.dependencies.Input('dropdown_flatmodel', 'value')])
-def update_predicted_line_graph(dropdown_town, dropdown_address, dropdown_floorarea, dropdown_remaininglease, dropdown_listyear, dropdown_flattype, dropdown_storeyrange, dropdown_flatmodel):
-    print("Town: ",dropdown_town)
-    print("Address: ",dropdown_address)
-    print("Floor Area: ",dropdown_floorarea)
-    print("Remaining Lease Years: ",dropdown_remaininglease)
-    print("Listing Year: ",dropdown_listyear)
-    print("Listing Year Type: ",type(dropdown_listyear))
-    print("Flat Type: ",dropdown_flattype)
-    print("Storey Range: ",dropdown_storeyrange)
-    print("Flat Model: ",dropdown_flatmodel)
-
-    actual_result = find_actual_resale_price(dropdown_town, dropdown_address, int(dropdown_listyear))
-    cat_to_num_result = convertCatToNum(dropdown_flattype, dropdown_storeyrange, dropdown_flatmodel)
-
-    #actual_result[0] - town_result, actual_result[1] - min_dist_mrt, actual_result[2] - min_dist_mall, actual_result[3] - cbd_dist, 
-    #cat_to_num_result[0] - flat_type_num, cat_to_num_result[1] - storey_range_num, cat_to_num_result[2] - flat_model_num
-    calculate_resale_price(int(dropdown_floorarea), int(dropdown_remaininglease), actual_result[0], actual_result[1], actual_result[2], actual_result[3], int(dropdown_listyear), cat_to_num_result[0], cat_to_num_result[1], cat_to_num_result[2])
-
-    return create_predicted_line_graph(actual_result[0])
-
-def create_bar_graph(title):
-    return {
-        'data': [
-                {'x': actual_year, 'y': actual_resale_price, 'type': 'bar', 'name': 'Actual Price'},
-                {'x': predict_year, 'y': predict_resale_price, 'type': 'bar', 'name': u'Predicted Price'},
-            ],
-            'layout': {
-                'title': title,
-                'xaxis':{
-                'title': "Years"
-                },
-               'yaxis':{
-                'title': "Resale Price"
-                },
-            }
-    }
 
 @dash_testPrediction_graph.callback(
     dash.dependencies.Output('bar-graph', 'figure'),
@@ -303,26 +121,48 @@ def create_bar_graph(title):
      dash.dependencies.Input('dropdown_flatmodel', 'value')])
 def update_bar_graph(dropdown_town, dropdown_address, dropdown_floorarea, dropdown_remaininglease, dropdown_listyear, dropdown_flattype, dropdown_storeyrange, dropdown_flatmodel):
 
-    actual_result = find_actual_resale_price(dropdown_town, dropdown_address, int(dropdown_listyear))
+    actual_result = find_actual_resale_price_per_sqm(dropdown_town, dropdown_address, int(dropdown_listyear))
     cat_to_num_result = convertCatToNum(dropdown_flattype, dropdown_storeyrange, dropdown_flatmodel)
 
     #actual_result[0] - town_result, actual_result[1] - min_dist_mrt, actual_result[2] - min_dist_mall, actual_result[3] - cbd_dist, 
     #cat_to_num_result[0] - flat_type_num, cat_to_num_result[1] - storey_range_num, cat_to_num_result[2] - flat_model_num
-    calculate_resale_price(int(dropdown_floorarea), int(dropdown_remaininglease), actual_result[0], actual_result[1], actual_result[2], actual_result[3], int(dropdown_listyear), cat_to_num_result[0], cat_to_num_result[1], cat_to_num_result[2])
+    calculate_resale_price_per_sqm(int(dropdown_floorarea), int(dropdown_remaininglease), actual_result[0], actual_result[1], actual_result[2], actual_result[3], actual_result[4], int(dropdown_listyear), cat_to_num_result[0], cat_to_num_result[1], cat_to_num_result[2])
+    print("actual_year",actual_year)
+    print("actual_resale_price_per_sqm",actual_resale_price_per_sqm)
+    print("predict_year",predict_year)
+    print("predict_resale_price_per_sqm",predict_resale_price_per_sqm)
 
-    return create_bar_graph(actual_result[0])
+    total_year = actual_year + predict_year
+    total_resale_price_per_sqm = actual_resale_price_per_sqm + predict_resale_price_per_sqm
+    column_color = [0]*len(total_year)
+    df = pd.DataFrame(
+    {'totalyear': total_year,
+     'totalresale_price_per_sqm': total_resale_price_per_sqm,
+     'predicted_column_color': column_color
+    })
+    df.iloc[len(column_color)-6:].predicted_column_color = 1
+    print("Dataframe",df)
 
-def find_actual_resale_price(town, address, listingyear):
+    fig = px.bar(df,  x = 'totalyear', y ='totalresale_price_per_sqm', color='predicted_column_color',
+                 labels={'totalyear':'Year ', 'totalresale_price_per_sqm':'Resale Price per sqm'}, height=400)
+    
+    fig.update_layout(title_text=actual_result[0])
+
+    return fig
+ 
+def find_actual_resale_price_per_sqm(town, address, listingyear):
     global isDefault_actual_resale_price
 
     town_result = "PASIR RIS"
     min_dist_mrt = 876.562453385642
     min_dist_mall = 749.497865968619
     cbd_dist = 9028.44930163097
+    price_per_sqm = 290.322580645161
+    resale_price = 500000
 
     # Clear the lists
     actual_year.clear()
-    actual_resale_price.clear()
+    actual_resale_price_per_sqm.clear()
     
     if isDefault_actual_resale_price:
         # Hardcoded for the first time
@@ -341,7 +181,7 @@ def find_actual_resale_price(town, address, listingyear):
             for row in range(len(complete_hdb_data)):
                 if complete_hdb_data.iloc[row]['listing_year'] == eachYear:
                     actual_year.append(eachYear)
-                    actual_resale_price.append(complete_hdb_data.iloc[row]['resale_price'])
+                    actual_resale_price_per_sqm.append(complete_hdb_data.iloc[row]['price_per_sqm'])
                     break
         isDefault_actual_resale_price = False
     else: 
@@ -360,14 +200,15 @@ def find_actual_resale_price(town, address, listingyear):
             for row in range(len(complete_hdb_data)):
                 if complete_hdb_data.iloc[row]['listing_year'] == eachYear:
                     actual_year.append(eachYear)
-                    actual_resale_price.append(complete_hdb_data.iloc[row]['resale_price'])
+                    actual_resale_price_per_sqm.append(complete_hdb_data.iloc[row]['price_per_sqm'])
                     min_dist_mrt = complete_hdb_data.iloc[row]['min_dist_mrt']
                     min_dist_mall = complete_hdb_data.iloc[row]['min_dist_mall']
                     cbd_dist = complete_hdb_data.iloc[row]['cbd_dist']
+                    resale_price = complete_hdb_data.iloc[row]['resale_price']
                     break
         town_result = town
         
-    return town_result, min_dist_mrt, min_dist_mall, cbd_dist
+    return town_result, min_dist_mrt, min_dist_mall, cbd_dist, resale_price
 
 def convertCatToNum(flat_type_cat, storey_range_cat, flat_model_cat):
     global isDefault_cat_to_num
@@ -447,13 +288,13 @@ def convertCatToNum(flat_type_cat, storey_range_cat, flat_model_cat):
     return flat_type_num, storey_range_num, flat_model_num
 
 # Linear Regression Formula - Calculate the number of years the user wants to predict to
-def calculate_resale_price(floorarea, remaininglease, town, min_dist_mrt, min_dist_mall, cbd_dist, listingyear, flat_type_num, storey_range_num, flat_model_num):
+def calculate_resale_price_per_sqm(floorarea, remaininglease, town, min_dist_mrt, min_dist_mall, cbd_dist, resale_price, listingyear, flat_type_num, storey_range_num, flat_model_num):
     global isDefault_predict_resale_price
-    predictyear = 2020
+    futureyear = 2020
 
     # Clear the lists
     predict_year.clear()
-    predict_resale_price.clear()
+    predict_resale_price_per_sqm.clear()
 
     if isDefault_predict_resale_price: 
         # Hardcoded for the first time
@@ -464,22 +305,23 @@ def calculate_resale_price(floorarea, remaininglease, town, min_dist_mrt, min_di
         # Extract the first row (Pasir Ris)
         town_data = lrf_data.iloc[0]
 
-        for eachYear in range(2010, listingyear+1):
-            new_resale_price = town_data.a1*floorarea + town_data.a2*remaininglease + town_data.a3*min_dist_mrt + town_data.a4*min_dist_mall + town_data.a5*cbd_dist + town_data.a6*eachYear + town_data.a7*flat_type_num + town_data.a8*storey_range_num + town_data.a9*flat_model_num + town_data.Intercept
-            predict_year.append(predictyear)
-            predict_resale_price.append(new_resale_price)
-            predictyear += 1
-            
+        for predictedYear in range(futureyear, futureyear+6):
+            new_resale_price_per_sqm = town_data.a1*floorarea + town_data.a2*remaininglease + town_data.a3*min_dist_mrt + town_data.a4*min_dist_mall + town_data.a5*cbd_dist + town_data.a6*predictedYear + town_data.a7*resale_price + town_data.a8*flat_type_num + town_data.a9*storey_range_num + town_data.a10*flat_model_num + town_data.Intercept
+            print("year:" + str(predictedYear) + "price_per_sqm" + str(new_resale_price_per_sqm))
+            predict_year.append(predictedYear)
+            predict_resale_price_per_sqm.append(new_resale_price_per_sqm)
+            remaininglease -= 1
+
         isDefault_predict_resale_price = False       
     else:
-        # Find the matching town based on the selected dropdown town
+        # Find the matching town based on the selected town in dropdown 
         for row in range(len(lrf_data)):
             if lrf_data.iloc[row]['town'] == town:
                 town_data = lrf_data.iloc[row]
                 #print("Corresponding Town: ", town_data)
 
-        for eachYear in range(2010, listingyear+1):
-            new_resale_price = town_data.a1*floorarea + town_data.a2*remaininglease + town_data.a3*min_dist_mrt + town_data.a4*min_dist_mall + town_data.a5*cbd_dist + town_data.a6*eachYear + town_data.a7*flat_type_num + town_data.a8*storey_range_num + town_data.a9*flat_model_num + town_data.Intercept
-            predict_year.append(predictyear)
-            predict_resale_price.append(new_resale_price)
-            predictyear += 1
+        for predictedYear in range(futureyear, futureyear+6):
+            new_resale_price_per_sqm = town_data.a1*floorarea + town_data.a2*remaininglease + town_data.a3*min_dist_mrt + town_data.a4*min_dist_mall + town_data.a5*cbd_dist + town_data.a6*predictedYear + town_data.a7*resale_price + town_data.a8*flat_type_num + town_data.a9*storey_range_num + town_data.a10*flat_model_num + town_data.Intercept
+            predict_year.append(predictedYear)
+            predict_resale_price_per_sqm.append(new_resale_price_per_sqm)
+            remaininglease -= 1
